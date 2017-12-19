@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 /* Class paper represents the middle area*/
 public class ClientPaper extends JPanel {
-    private HashSet hs = new HashSet();
+    private HashSet<DrawInfo> hs = new HashSet<DrawInfo>();
     private Client sender;
 
 
@@ -22,7 +22,6 @@ public class ClientPaper extends JPanel {
     // Used for painting the pixels
     protected synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.black);
         Iterator i = hs.iterator();
         while(i.hasNext()) {
             DrawInfo info = (DrawInfo) i.next();
@@ -43,7 +42,7 @@ public class ClientPaper extends JPanel {
     private class L1 extends MouseAdapter {
         public void mousePressed(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
+           // addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
             sender.send(p);
             //  sender.sendAway(p);
         }
@@ -53,7 +52,7 @@ public class ClientPaper extends JPanel {
     private class L2 extends MouseMotionAdapter {
         public void mouseDragged(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
+          //  addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
             sender.send(p);
             //  sender.sendAway(p);
         }

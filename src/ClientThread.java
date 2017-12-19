@@ -52,7 +52,9 @@ public class ClientThread extends Thread
         {
             try
             {
-                client.handle(ois.readObject());
+                Object obj = ois.readObject();
+                if (obj != null)
+                    client.handle(obj);
             }
             catch(IOException ioe)
             {

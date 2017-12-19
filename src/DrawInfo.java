@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.io.Serializable;
+import java.net.InetAddress;
 
 /**
  * Created by dayan on 19.12.2017.
@@ -8,11 +9,27 @@ public class DrawInfo implements Serializable {
     int _x;
     int _y;
     Color _clr;
+    int port = 0;
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     public DrawInfo(int _x, int _y, Color _clr) {
         this._x = _x;
         this._y = _y;
         this._clr = _clr;
+    }
+
+    public DrawInfo(int _x, int _y, Color _clr, int port) {
+        this._x = _x;
+        this._y = _y;
+        this._clr = _clr;
+        this.port = port;
     }
 
     public int get_x() {

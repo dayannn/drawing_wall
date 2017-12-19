@@ -3,12 +3,15 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
 /* Class paper represents the middle area*/
 public class ServerPaper extends JPanel {
-    private HashSet hs = new HashSet();
+    private HashSet<DrawInfo> hs = new HashSet<DrawInfo>();
+
+    // private ArrayList<DrawInfo> hs = new ArrayList<>();
     private Server sender;
 
 
@@ -22,12 +25,12 @@ public class ServerPaper extends JPanel {
     // Used for painting the pixels
     protected synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.black);
         Iterator i = hs.iterator();
         while(i.hasNext()) {
             DrawInfo info = (DrawInfo) i.next();
             g.setColor(info.get_clr());
             g.fillOval(info.get_x(), info.get_y(), 3, 3);
+
         }
     }
 

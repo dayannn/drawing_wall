@@ -9,22 +9,37 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Client extends JFrame implements Runnable
-{
-    private Socket socket              = null;
-    private Thread thread              = null;
+public class Client extends JFrame implements Runnable {
+    private Socket socket = null;
+    private Thread thread = null;
     private OutputStream streamOut = null;
-    private ClientThread client    = null;
+    private ClientThread client = null;
     private static final Object sMonitor = new Object();
     private ArrayList<DrawInfo> pList = new ArrayList<>();
     private ClientPaper paper = null;
     private JPanel mainpanel;
+    private JPanel paperPanel;
+    private JPanel colorChoosePanel;
+    private Color drawColor = new Color(0, 0, 0);
 
     ObjectOutputStream oos = null;
 
-    public Client(String serverName, int serverPort)
-    {
-       // createUIComponents();
+    public Client(String serverName, int serverPort) {
+        //createUIComponents();
+        paper = new ClientPaper(this);
+       // mainpanel.setLayout(new GridLayout());
+        paperPanel.setLayout(new GridLayout());
+        paperPanel.add(paper);
+        colorChoosePanel.setLayout(new GridLayout());
+        ColorChooserButton colorChooser = new ColorChooserButton(drawColor);
+        colorChooser.addColorChangedListener(new ColorChooserButton.ColorChangedListener() {
+            @Override
+            public void colorChanged(Color newColor) {
+                drawColor = newColor;
+            }
+        });
+        colorChoosePanel.add(colorChooser);
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(mainpanel);
         setSize(640, 480);
@@ -32,24 +47,18 @@ public class Client extends JFrame implements Runnable
 
 
         System.out.println("Establishing connection. Please wait ...");
-        try
-        {
+        try {
             socket = new Socket(serverName, serverPort);
             System.out.println("Connected: " + socket);
             start();
-        }
-        catch(UnknownHostException uhe)
-        {
+        } catch (UnknownHostException uhe) {
             System.out.println("Host unknown: " + uhe.getMessage());
-        }
-        catch(IOException ioe)
-        {
+        } catch (IOException ioe) {
             System.out.println("Unexpected exception: " + ioe.getMessage());
         }
     }
 
-    public void run()
-    {
+    public void run() {
        /* while (thread != null)
         {
             synchronized (sMonitor) {
@@ -61,8 +70,7 @@ public class Client extends JFrame implements Runnable
             }
         }*/
 
-        while (thread != null)
-        {
+        while (thread != null) {
             synchronized (sMonitor) {
                 try {
                     sMonitor.wait();
@@ -83,66 +91,60 @@ public class Client extends JFrame implements Runnable
         }
     }
 
-    public void handle(Object obj)
-    {
+    public void handle(Object obj) {
       /*  if (msg.equals(".bye"))
         {
             System.out.println("Good bye. Press RETURN to exit ...");
             stop();
         }
         else {*/
-            DrawInfo info = (DrawInfo) obj;
-            System.out.println("x= " + String.valueOf(info.get_x()) +
-                               " y= " + String.valueOf(info.get_y()) +
-                               " clr= " + String.valueOf(info.get_clr()));
+        DrawInfo info = (DrawInfo) obj;
+        System.out.println("x= " + String.valueOf(info.get_x()) +
+                " y= " + String.valueOf(info.get_y()) +
+                " clr= " + String.valueOf(info.get_clr()) +
+                " port= " + String.valueOf(info.getPort()));
 
-            paper.addPoint(info);
-       // }
+        paper.addPoint(info);
+        // }
     }
 
-    public void start() throws IOException
-    {
+    public void start() throws IOException {
         streamOut = socket.getOutputStream();
         oos = new ObjectOutputStream(streamOut);
-        if (thread == null)
-        {
+        if (thread == null) {
             client = new ClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
         }
     }
 
-    public void stop()
-    {
-        if (thread != null)
-        {  thread.stop();
+    public void stop() {
+        if (thread != null) {
+            thread.stop();
             thread = null;
         }
-        try
-        {
+        try {
             if (oos != null)
                 oos.close();
             if (streamOut != null)
                 streamOut.close();
-            if (socket    != null)
+            if (socket != null)
                 socket.close();
-        }
-        catch(IOException ioe)
-        {
+        } catch (IOException ioe) {
             System.out.println("Error closing ...");
         }
 
         client.close();
         client.stop();
     }
-    public static void main(String args[])
-    {
+
+    public static void main(String args[]) {
         Client client = new Client("127.0.0.1", 1234);
     }
 
 
-    public void send(Point pnt){
-        DrawInfo info = new DrawInfo(pnt.x, pnt.y, Color.BLUE);
+    public void send(Point pnt) {
+        DrawInfo info = new DrawInfo(pnt.x, pnt.y, drawColor, socket.getLocalPort());
         pList.add(info);
         synchronized (sMonitor) {
             sMonitor.notify();
@@ -151,7 +153,15 @@ public class Client extends JFrame implements Runnable
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        paper = new ClientPaper(this);
+       // paper = new ClientPaper(this);
+    }
+
+    public Color getDrawColor() {
+        return drawColor;
+    }
+
+    public void setDrawColor(Color drawColor) {
+        this.drawColor = drawColor;
     }
 }
 
