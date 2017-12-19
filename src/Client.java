@@ -13,12 +13,13 @@ public class Client extends JFrame implements Runnable
 {
     private Socket socket              = null;
     private Thread thread              = null;
-    private DataInputStream  console   = null;
-    private DataOutputStream streamOut = null;
+    private OutputStream streamOut = null;
     private ClientThread client    = null;
     private static final Object sMonitor = new Object();
-    private ArrayList<Point> pList = new ArrayList<>();
+    private ArrayList<DrawInfo> pList = new ArrayList<>();
     private ClientPaper paper = null;
+
+    ObjectOutputStream oos = null;
 
     public Client(String serverName, int serverPort)
     {
@@ -66,8 +67,10 @@ public class Client extends JFrame implements Runnable
                     sMonitor.wait();
                     if (pList.isEmpty())
                         break;
-                    Point p = pList.remove(0);
-                    streamOut.writeUTF(String.valueOf((int) p.getX()) + " " + String.valueOf((int) p.getY()));
+                    DrawInfo info = pList.remove(0);
+                    //streamOut.writeUTF(String.valueOf((int) p.getX()) + " " + String.valueOf((int) p.getY()));
+                    oos.writeObject(info);
+                    oos.flush();
                     streamOut.flush();
                 } catch (IOException ioe) {
                     System.out.println("Sending error: " + ioe.getMessage());
@@ -79,26 +82,27 @@ public class Client extends JFrame implements Runnable
         }
     }
 
-    public void handle(String msg)
+    public void handle(Object obj)
     {
-        if (msg.equals(".bye"))
+      /*  if (msg.equals(".bye"))
         {
             System.out.println("Good bye. Press RETURN to exit ...");
             stop();
         }
-        else {
-            System.out.println(msg);
-            String[] dbls = msg.split(" ");
-            Integer x = Integer.parseInt(dbls[1]);
-            Integer y = Integer.parseInt(dbls[2]);
-            paper.addPoint(new Point(x, y));
-        }
+        else {*/
+            DrawInfo info = (DrawInfo) obj;
+            System.out.println("x= " + String.valueOf(info.get_x()) +
+                               " y= " + String.valueOf(info.get_y()) +
+                               " clr= " + String.valueOf(info.get_clr()));
+
+            paper.addPoint(info);
+       // }
     }
 
     public void start() throws IOException
     {
-        console   = new DataInputStream(System.in);
-        streamOut = new DataOutputStream(socket.getOutputStream());
+        streamOut = socket.getOutputStream();
+        oos = new ObjectOutputStream(streamOut);
         if (thread == null)
         {
             client = new ClientThread(this, socket);
@@ -115,8 +119,8 @@ public class Client extends JFrame implements Runnable
         }
         try
         {
-            if (console   != null)
-                console.close();
+            if (oos != null)
+                oos.close();
             if (streamOut != null)
                 streamOut.close();
             if (socket    != null)
@@ -137,7 +141,8 @@ public class Client extends JFrame implements Runnable
 
 
     public void send(Point pnt){
-        pList.add(pnt);
+        DrawInfo info = new DrawInfo(pnt.x, pnt.y, Color.BLUE);
+        pList.add(info);
         synchronized (sMonitor) {
             sMonitor.notify();
         }
@@ -163,14 +168,16 @@ class ClientPaper extends JPanel {
         g.setColor(Color.black);
         Iterator i = hs.iterator();
         while(i.hasNext()) {
-            Point p = (Point)i.next();
-            g.fillOval(p.x, p.y, 3, 3);
+            DrawInfo info = (DrawInfo) i.next();
+            g.setColor(info.get_clr());
+            g.fillOval(info.get_x(), info.get_y(), 3, 3);
+
         }
     }
 
     // Adds a pixel to the Hashset and repaints
-    protected synchronized void addPoint(Point p) {
-        hs.add(p);
+    protected synchronized void addPoint(DrawInfo info) {
+        hs.add(info);
         repaint();
     }
 
@@ -179,7 +186,7 @@ class ClientPaper extends JPanel {
     private class L1 extends MouseAdapter {
         public void mousePressed(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(p);
+            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
             sender.send(p);
             //  sender.sendAway(p);
         }
@@ -189,7 +196,7 @@ class ClientPaper extends JPanel {
     private class L2 extends MouseMotionAdapter {
         public void mouseDragged(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(p);
+            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
             sender.send(p);
             //  sender.sendAway(p);
         }

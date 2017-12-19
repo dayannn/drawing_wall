@@ -5,7 +5,9 @@ public class ClientThread extends Thread
 {
     private Socket socket   = null;
     private Client       client   = null;
-    private DataInputStream  streamIn = null;
+    private InputStream  streamIn = null;
+
+    ObjectInputStream ois = null;
 
     public ClientThread(Client _client, Socket _socket)
     {
@@ -19,7 +21,8 @@ public class ClientThread extends Thread
     {
         try
         {
-            streamIn  = new DataInputStream(socket.getInputStream());
+            streamIn  = socket.getInputStream();
+            ois = new ObjectInputStream(streamIn);
         }
         catch(IOException ioe)
         {
@@ -32,6 +35,8 @@ public class ClientThread extends Thread
     {
         try
         {
+            if (ois != null)
+                ois.close();
             if (streamIn != null)
                 streamIn.close();
         }
@@ -47,12 +52,14 @@ public class ClientThread extends Thread
         {
             try
             {
-                client.handle(streamIn.readUTF());
+                client.handle(ois.readObject());
             }
             catch(IOException ioe)
             {
                 System.out.println("Listening error: " + ioe.getMessage());
                 client.stop();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }

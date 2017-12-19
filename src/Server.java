@@ -84,22 +84,22 @@ public class Server extends JFrame implements Runnable
     }
 
 
-    public synchronized void handle(int ID, String input)
+    public synchronized void handle(int ID, Object obj)
     {
-        if (input.equals(".bye"))
+       /* if (input.equals(".bye"))
         {
             clients[findClient(ID)].send(".bye");
             remove(ID);
         }
-        else {
-            System.out.println(input);
-            String[] dbls = input.split(" ");
-            Integer x = Integer.parseInt(dbls[0]);
-            Integer y = Integer.parseInt(dbls[1]);
-            paper.addPoint(new Point(x, y));
+        else {*/
+            DrawInfo info = (DrawInfo) obj;
+            System.out.println("x= " + String.valueOf(info.get_x()) +
+                               " y= " + String.valueOf(info.get_y()) +
+                               " clr= " + String.valueOf(info.get_clr()));
+            paper.addPoint(info);
             for (int i = 0; i < clientCount; i++)
-                clients[i].send(ID + ": " + input);
-        }
+                clients[i].send(obj);
+       // }
     }
 
 
@@ -176,14 +176,15 @@ class ServerPaper extends JPanel {
         g.setColor(Color.black);
         Iterator i = hs.iterator();
         while(i.hasNext()) {
-            Point p = (Point)i.next();
-            g.fillOval(p.x, p.y, 3, 3);
+            DrawInfo info = (DrawInfo) i.next();
+            g.setColor(info.get_clr());
+            g.fillOval(info.get_x(), info.get_y(), 3, 3);
         }
     }
 
 
     // Adds a pixel to the Hashset and repaints
-    protected  synchronized void addPoint(Point p) {
+    protected  synchronized void addPoint(DrawInfo p) {
         hs.add(p);
         repaint();
     }
@@ -193,7 +194,7 @@ class ServerPaper extends JPanel {
     private class L1 extends MouseAdapter {
         public void mousePressed(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(p);
+            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
           //  sender.sendAway(p);
         }
     }
@@ -202,7 +203,7 @@ class ServerPaper extends JPanel {
     private class L2 extends MouseMotionAdapter {
         public void mouseDragged(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(p);
+            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
           //  sender.sendAway(p);
         }
     }
