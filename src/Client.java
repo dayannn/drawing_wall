@@ -18,14 +18,15 @@ public class Client extends JFrame implements Runnable
     private static final Object sMonitor = new Object();
     private ArrayList<DrawInfo> pList = new ArrayList<>();
     private ClientPaper paper = null;
+    private JPanel mainpanel;
 
     ObjectOutputStream oos = null;
 
     public Client(String serverName, int serverPort)
     {
-        paper = new ClientPaper(this);
+       // createUIComponents();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setContentPane(paper);
+        setContentPane(mainpanel);
         setSize(640, 480);
         setVisible(true);
 
@@ -147,58 +148,10 @@ public class Client extends JFrame implements Runnable
             sMonitor.notify();
         }
     }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        paper = new ClientPaper(this);
+    }
 }
 
-/* Class paper represents the middle area*/
-class ClientPaper extends JPanel {
-    private HashSet hs = new HashSet();
-    private Client sender;
-
-
-    public ClientPaper(Client sender) {
-        this.sender = sender;
-        setBackground(Color.white);
-        addMouseListener(new L1());
-        addMouseMotionListener(new L2());
-    }
-
-    // Used for painting the pixels
-    protected synchronized void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(Color.black);
-        Iterator i = hs.iterator();
-        while(i.hasNext()) {
-            DrawInfo info = (DrawInfo) i.next();
-            g.setColor(info.get_clr());
-            g.fillOval(info.get_x(), info.get_y(), 3, 3);
-
-        }
-    }
-
-    // Adds a pixel to the Hashset and repaints
-    protected synchronized void addPoint(DrawInfo info) {
-        hs.add(info);
-        repaint();
-    }
-
-
-    /*Listens to when the mouse is pressed*/
-    private class L1 extends MouseAdapter {
-        public void mousePressed(MouseEvent me) {
-            Point p = me.getPoint();
-            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
-            sender.send(p);
-            //  sender.sendAway(p);
-        }
-    }
-
-    /*Listens to when the mouse is dragged*/
-    private class L2 extends MouseMotionAdapter {
-        public void mouseDragged(MouseEvent me) {
-            Point p = me.getPoint();
-            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
-            sender.send(p);
-            //  sender.sendAway(p);
-        }
-    }
-} // End class Paper
