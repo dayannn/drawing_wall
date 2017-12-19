@@ -29,8 +29,7 @@ public class ServerPaper extends JPanel {
         while(i.hasNext()) {
             DrawInfo info = (DrawInfo) i.next();
             g.setColor(info.get_clr());
-            g.fillOval(info.get_x(), info.get_y(), 3, 3);
-
+            g.drawLine(info.get_x1(), info.get_y1(), info.get_x2(), info.get_y2());
         }
     }
 

@@ -98,8 +98,10 @@ public class Client extends JFrame implements Runnable {
         }
         else {*/
         DrawInfo info = (DrawInfo) obj;
-        System.out.println("x= " + String.valueOf(info.get_x()) +
-                " y= " + String.valueOf(info.get_y()) +
+        System.out.println("x1= " + String.valueOf(info.get_x1()) +
+                " y1= " + String.valueOf(info.get_y1()) +
+                " x2= " + String.valueOf(info.get_x2()) +
+                " y2= " + String.valueOf(info.get_y2()) +
                 " clr= " + String.valueOf(info.get_clr()) +
                 " port= " + String.valueOf(info.getPort()));
 
@@ -142,8 +144,8 @@ public class Client extends JFrame implements Runnable {
     }*/
 
 
-    public void send(Point pnt) {
-        DrawInfo info = new DrawInfo(pnt.x, pnt.y, drawColor, socket.getLocalPort());
+    public void send(Point pnt1, Point pnt2) {
+        DrawInfo info = new DrawInfo(pnt1.x, pnt1.y, pnt2.x, pnt2.y, drawColor, socket.getLocalPort());
         pList.add(info);
         synchronized (sMonitor) {
             sMonitor.notify();

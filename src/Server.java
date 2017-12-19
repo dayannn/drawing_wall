@@ -81,8 +81,10 @@ public class Server extends JFrame implements Runnable {
         }
         else {*/
         DrawInfo info = (DrawInfo) obj;
-        System.out.println("x= " + String.valueOf(info.get_x()) +
-                " y= " + String.valueOf(info.get_y()) +
+        System.out.println("x1= " + String.valueOf(info.get_x1()) +
+                " y1= " + String.valueOf(info.get_y1()) +
+                "x2= " + String.valueOf(info.get_x2()) +
+                " y2= " + String.valueOf(info.get_y2()) +
                 " clr= " + String.valueOf(info.get_clr()) +
                 " port= " + String.valueOf(info.getPort()));
         paper.addPoint(info);

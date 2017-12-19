@@ -1,3 +1,5 @@
+import javafx.scene.shape.Line;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -10,6 +12,8 @@ import java.util.Iterator;
 public class ClientPaper extends JPanel {
     private HashSet<DrawInfo> hs = new HashSet<DrawInfo>();
     private Client sender;
+
+    private Point lastPressed;
 
 
     public ClientPaper(Client sender) {
@@ -26,7 +30,7 @@ public class ClientPaper extends JPanel {
         while(i.hasNext()) {
             DrawInfo info = (DrawInfo) i.next();
             g.setColor(info.get_clr());
-            g.fillOval(info.get_x(), info.get_y(), 3, 3);
+            g.drawLine(info.get_x1(), info.get_y1(), info.get_x2(), info.get_y2());
 
         }
     }
@@ -44,8 +48,8 @@ public class ClientPaper extends JPanel {
         public void mousePressed(MouseEvent me) {
             Point p = me.getPoint();
            // addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
-            sender.send(p);
-            //  sender.sendAway(p);
+            sender.send(p, p);
+            lastPressed = p;
         }
     }
 
@@ -54,8 +58,10 @@ public class ClientPaper extends JPanel {
         public void mouseDragged(MouseEvent me) {
             Point p = me.getPoint();
           //  addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
-            sender.send(p);
-            //  sender.sendAway(p);
+            sender.send(lastPressed, p);
+            lastPressed = p;
+
+
         }
     }
 } // End class Paper
