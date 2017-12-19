@@ -25,9 +25,8 @@ public class Client extends JFrame implements Runnable {
     ObjectOutputStream oos = null;
 
     public Client(String serverName, int serverPort) {
-        //createUIComponents();
+        setTitle("Drawing wall client");
         paper = new ClientPaper(this);
-       // mainpanel.setLayout(new GridLayout());
         paperPanel.setLayout(new GridLayout());
         paperPanel.add(paper);
         colorChoosePanel.setLayout(new GridLayout());
@@ -138,9 +137,9 @@ public class Client extends JFrame implements Runnable {
         client.stop();
     }
 
-    public static void main(String args[]) {
+   /* public static void main(String args[]) {
         Client client = new Client("127.0.0.1", 1234);
-    }
+    }*/
 
 
     public void send(Point pnt) {

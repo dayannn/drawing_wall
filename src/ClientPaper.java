@@ -31,6 +31,7 @@ public class ClientPaper extends JPanel {
         }
     }
 
+
     // Adds a pixel to the Hashset and repaints
     protected synchronized void addPoint(DrawInfo info) {
         hs.add(info);

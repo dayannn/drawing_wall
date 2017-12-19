@@ -18,6 +18,7 @@ public class Server extends JFrame implements Runnable {
     private JPanel mainpanel;
 
     public Server(int port) {
+        setTitle("Drawing wall server");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(mainpanel);
         setSize(640, 480);
@@ -128,9 +129,9 @@ public class Server extends JFrame implements Runnable {
     }
 
 
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         Server server = new Server(1234);
-    }
+    }*/
 
     private void createUIComponents() {
         // TODO: place custom component creation code here

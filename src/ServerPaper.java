@@ -45,8 +45,7 @@ public class ServerPaper extends JPanel {
     private class L1 extends MouseAdapter {
         public void mousePressed(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
-          //  sender.sendAway(p);
+            //addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
         }
     }
 
@@ -54,8 +53,7 @@ public class ServerPaper extends JPanel {
     private class L2 extends MouseMotionAdapter {
         public void mouseDragged(MouseEvent me) {
             Point p = me.getPoint();
-            addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
-          //  sender.sendAway(p);
+          //  addPoint(new DrawInfo(p.x, p.y, Color.BLACK));
         }
     }
 } // End class Paper
