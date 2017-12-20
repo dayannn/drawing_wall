@@ -1,12 +1,6 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.net.*;
 import java.io.*;
-import java.util.HashSet;
-import java.util.Iterator;
 
 public class Server extends JFrame implements Runnable {
     private ServerThread clients[] = new ServerThread[50];

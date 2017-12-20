@@ -1,10 +1,6 @@
 import java.awt.*;
 import java.io.Serializable;
-import java.net.InetAddress;
 
-/**
- * Created by dayan on 19.12.2017.
- */
 public class DrawInfo implements Serializable {
     int _x1;
     int _y1;

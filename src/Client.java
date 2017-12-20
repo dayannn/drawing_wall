@@ -1,13 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 
 public class Client extends JFrame implements Runnable {
     private Socket socket = null;
@@ -63,16 +58,6 @@ public class Client extends JFrame implements Runnable {
     }
 
     public void run() {
-       /* while (thread != null)
-        {
-            synchronized (sMonitor) {
-                try {
-                    sMonitor.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
 
         while (thread != null) {
             synchronized (sMonitor) {
@@ -96,12 +81,6 @@ public class Client extends JFrame implements Runnable {
     }
 
     public void handle(Object obj) {
-      /*  if (msg.equals(".bye"))
-        {
-            System.out.println("Good bye. Press RETURN to exit ...");
-            stop();
-        }
-        else {*/
         DrawInfo info = (DrawInfo) obj;
         System.out.println("x1= " + String.valueOf(info.get_x1()) +
                 " y1= " + String.valueOf(info.get_y1()) +
@@ -142,6 +121,7 @@ public class Client extends JFrame implements Runnable {
         }
 
         client.close();
+        JOptionPane.showMessageDialog(mainpanel, "Connection with server lost!");
         client.stop();
     }
 
