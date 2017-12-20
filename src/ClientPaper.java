@@ -5,12 +5,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
 /* Class paper represents the middle area*/
 public class ClientPaper extends JPanel {
-    private HashSet<DrawInfo> hs = new HashSet<DrawInfo>();
+    //private HashSet<DrawInfo> hs = new HashSet<DrawInfo>();
+    private ArrayList<DrawInfo> hs = new ArrayList<>();
     private Client sender;
 
     private Point lastPressed;
@@ -30,7 +32,9 @@ public class ClientPaper extends JPanel {
         while(i.hasNext()) {
             DrawInfo info = (DrawInfo) i.next();
             g.setColor(info.get_clr());
-            g.drawLine(info.get_x1(), info.get_y1(), info.get_x2(), info.get_y2());
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(info.getWidth()));
+            g2.drawLine(info.get_x1(), info.get_y1(), info.get_x2(), info.get_y2());
 
         }
     }

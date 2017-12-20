@@ -20,6 +20,7 @@ public class Client extends JFrame implements Runnable {
     private JPanel mainpanel;
     private JPanel paperPanel;
     private JPanel colorChoosePanel;
+    private JSpinner widthSpinner;
     private Color drawColor = new Color(0, 0, 0);
 
     ObjectOutputStream oos = null;
@@ -29,6 +30,7 @@ public class Client extends JFrame implements Runnable {
         paper = new ClientPaper(this);
         paperPanel.setLayout(new GridLayout());
         paperPanel.add(paper);
+
         colorChoosePanel.setLayout(new GridLayout());
         ColorChooserButton colorChooser = new ColorChooserButton(drawColor);
         colorChooser.addColorChangedListener(new ColorChooserButton.ColorChangedListener() {
@@ -38,6 +40,9 @@ public class Client extends JFrame implements Runnable {
             }
         });
         colorChoosePanel.add(colorChooser);
+
+        SpinnerNumberModel model1 = new SpinnerNumberModel(2, 1, 15, 1);
+        widthSpinner.setModel(model1);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(mainpanel);
@@ -103,6 +108,7 @@ public class Client extends JFrame implements Runnable {
                 " x2= " + String.valueOf(info.get_x2()) +
                 " y2= " + String.valueOf(info.get_y2()) +
                 " clr= " + String.valueOf(info.get_clr()) +
+                " w= " + String.valueOf(info.getWidth()) +
                 " port= " + String.valueOf(info.getPort()));
 
         paper.addPoint(info);
@@ -145,7 +151,7 @@ public class Client extends JFrame implements Runnable {
 
 
     public void send(Point pnt1, Point pnt2) {
-        DrawInfo info = new DrawInfo(pnt1.x, pnt1.y, pnt2.x, pnt2.y, drawColor, socket.getLocalPort());
+        DrawInfo info = new DrawInfo(pnt1.x, pnt1.y, pnt2.x, pnt2.y, drawColor, (int)widthSpinner.getValue(), socket.getLocalPort());
         pList.add(info);
         synchronized (sMonitor) {
             sMonitor.notify();

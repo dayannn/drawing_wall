@@ -86,6 +86,7 @@ public class Server extends JFrame implements Runnable {
                 "x2= " + String.valueOf(info.get_x2()) +
                 " y2= " + String.valueOf(info.get_y2()) +
                 " clr= " + String.valueOf(info.get_clr()) +
+                " w= " + String.valueOf(info.getWidth()) +
                 " port= " + String.valueOf(info.getPort()));
         paper.addPoint(info);
         for (int i = 0; i < clientCount; i++)
